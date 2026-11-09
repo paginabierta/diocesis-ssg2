@@ -1,0 +1,388 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{--rojo:#8B1A1A;--azul:#1A2D6B;--oro:#C9A84C;--fondo:#F5F0E8;--papel:#FFFFFF;
+--texto:#1A1208;--suave:#7A6558;--linea:#E4DACB;--rubrica:#9B2226;
+--fuente:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;}
+@media (prefers-color-scheme: dark){:root{--fondo:#14110E;--papel:#1D1916;--texto:#EFE7DA;
+--suave:#B3A491;--linea:#2E2822;--oro:#D9BC62;--rubrica:#E0736B;}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;-webkit-text-size-adjust:100%;background:var(--fondo);color:var(--texto);font-family:var(--fuente);
+font-size:15px;line-height:1.55;padding:14px}
+input,textarea,button{font-family:var(--fuente)}
+.card{background:var(--papel);border:1px solid var(--linea);border-radius:14px;padding:15px 16px;margin-bottom:12px}
+.eti{font-size:11px;text-transform:uppercase;letter-spacing:.9px;color:var(--suave);font-weight:700;margin-bottom:9px}
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tabs button{flex:1;background:transparent;border:1px solid var(--linea);color:var(--suave);
+border-radius:10px;padding:10px 6px;font-size:13px;font-weight:600}
+.tabs button.on{background:var(--azul);border-color:var(--azul);color:#fff}
+.nueva{display:flex;gap:8px;margin-bottom:6px}
+.nueva input[type=text]{flex:1;min-width:0;border:1px solid var(--linea);border-radius:10px;background:var(--papel);
+color:var(--texto);padding:11px 12px;font-size:15px}
+.fbtn{position:relative;flex:none;width:48px;height:44px;border:1px solid var(--linea);border-radius:10px;
+background:var(--papel);display:flex;align-items:center;justify-content:center;font-size:21px}
+.fbtn.puesta{border-color:var(--oro);background:rgba(201,168,76,.22)}
+.fbtn input[type=date]{position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;border:0;padding:0;margin:0}
+.muestraF{font-size:12.5px;color:var(--suave);margin:2px 0 0;min-height:17px}
+.muestraF b{color:var(--texto)}
+.muestraF button{background:none;border:0;color:var(--suave);font-size:13px;text-decoration:underline;padding:0 4px}
+.nueva button.mas{background:var(--azul);color:#fff;border:0;border-radius:10px;width:46px;font-size:22px;flex:none}
+ul.tareas{list-style:none;padding:0;margin:8px 0 0}
+ul.tareas li{display:flex;align-items:flex-start;gap:11px;padding:11px 0;border-top:1px solid var(--linea)}
+ul.tareas li .chk{width:24px;height:24px;border-radius:7px;border:2px solid var(--oro);flex:none;
+display:flex;align-items:center;justify-content:center;font-size:14px;color:transparent;margin-top:1px}
+ul.tareas li.hecha .chk{background:var(--oro);border-color:var(--oro);color:#1A1208}
+ul.tareas li .txt{flex:1;font-size:14.5px;line-height:1.45;word-break:break-word}
+ul.tareas li.hecha .txt{text-decoration:line-through;color:var(--suave)}
+ul.tareas li .x{background:none;border:0;color:var(--suave);font-size:20px;padding:0 4px;flex:none}
+.fechaT{font-size:11.5px;color:var(--suave);display:block;margin-top:2px}
+.fechaT.vencida{color:var(--rubrica);font-weight:600}
+.grupoT{font-size:11px;text-transform:uppercase;letter-spacing:.9px;color:var(--suave);font-weight:700;margin:16px 0 2px}
+.vacio{color:var(--suave);font-style:italic;font-size:13.5px}
+.bar{display:flex;gap:9px;margin-top:10px;align-items:center;flex-wrap:wrap}
+button.b{background:var(--azul);color:#fff;border:0;border-radius:10px;padding:10px 16px;font-size:14px;font-weight:600}
+button.b.sec{background:transparent;color:var(--suave);border:1px solid var(--linea)}
+.est{font-size:12.5px;color:var(--suave)}
+.buscar{width:100%;border:1px solid var(--linea);border-radius:10px;background:var(--papel);
+color:var(--texto);padding:11px 12px;font-size:15px;margin-bottom:10px}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:4px}
+.chip{border:1px solid var(--linea);background:transparent;color:var(--suave);border-radius:999px;
+padding:6px 12px;font-size:12.5px;font-weight:600}
+.chip.on{color:#fff;border-color:transparent;background:var(--suave)}
+.nota{border-top:1px solid var(--linea);padding:13px 0;display:flex;gap:11px;align-items:flex-start}
+.nota:first-of-type{border-top:0}
+.nota .barra{width:4px;align-self:stretch;border-radius:3px;flex:none}
+.nota .cont{flex:1;min-width:0}
+.nota h3{margin:0;font-size:15px;font-weight:600;line-height:1.3}
+.nota p{margin:3px 0 0;font-size:13px;color:var(--suave);
+display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.meta{font-size:11.5px;color:var(--suave);margin-top:5px}
+.tag{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;
+color:#fff;margin-right:6px;letter-spacing:.3px}
+#editor{display:none}
+.tit{width:100%;border:0;border-bottom:1px solid var(--linea);background:transparent;color:var(--texto);
+padding:8px 2px;font-size:18px;font-weight:600;margin-bottom:8px}
+.herr{display:flex;gap:6px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--linea);margin-bottom:10px}
+.herr button{background:transparent;border:1px solid var(--linea);color:var(--texto);border-radius:8px;
+min-width:38px;height:36px;font-size:15px;padding:0 9px}
+#cuerpo{min-height:250px;outline:none;font-size:15.5px;line-height:1.7;padding:4px 2px}
+#cuerpo:empty:before{content:attr(data-ph);color:var(--suave)}
+#cuerpo ul,#cuerpo ol{padding-left:22px}
+#cuerpo h3{font-size:17px;margin:14px 0 4px}
+.litur{font-size:12px;color:var(--suave);margin:8px 0 0}
+</style></head><body>
+
+<div class="tabs">
+  <button id="tabT" onclick="verTab('tareas')">Para hoy</button>
+  <button id="tabN" class="on" onclick="verTab('notas')">Apuntes</button>
+</div>
+
+<div id="paneTareas" style="display:none">
+  <div class="card">
+    <div class="eti">Cosas para hacer</div>
+    <p style="margin:0 0 9px;font-size:12.5px;color:var(--suave)">Escriba la tarea y toque <strong>+</strong>. El 📅 es opcional: si le pone fecha, aparecerá en la sección Hoy ese día.</p>
+    <div class="nueva">
+      <input type="text" id="nuevaT" placeholder="Escriba una tarea…">
+      <label class="fbtn" id="fbtn">📅<input type="date" id="nuevaF" onchange="cambioFecha()"></label>
+      <button class="mas" onclick="agregar()">+</button>
+    </div>
+    <p class="muestraF" id="muestraF"></p>
+    <ul class="tareas" id="listaT"></ul>
+    <p class="vacio" id="vacioT" style="margin:12px 0 0">Todavía no hay tareas.</p>
+    <div class="bar">
+      <span class="est" id="contT"></span>
+      <button class="b sec" onclick="limpiarHechas()">Quitar cumplidas</button>
+    </div>
+  </div>
+</div>
+
+<div id="paneNotas">
+  <div class="card">
+    <input class="buscar" id="buscar" type="text" placeholder="Buscar en los apuntes…" oninput="pintarNotas()">
+    <div class="chips" id="filtros"></div>
+  </div>
+  <div class="card">
+    <div class="eti" id="etiLista">Apuntes</div>
+    <div id="listaN"></div>
+    <p class="vacio" id="vacioN" style="margin:0">Todavía no hay apuntes.</p>
+    <div class="bar">
+      <button class="b" onclick="abrirEditor(null)">Nuevo apunte</button>
+      <button class="b sec" onclick="exportarTodo()">Exportar todo</button>
+    </div>
+  </div>
+  <div class="card">
+    <p style="margin:0;font-size:12.5px;color:var(--suave)">
+      Los apuntes se guardan solo en este teléfono. Si cambia de equipo, borra los datos del navegador o quita la app se pierden:
+      use <strong>Exportar todo</strong> de vez en cuando para guardar una copia.
+    </p>
+  </div>
+</div>
+
+<div id="editor">
+  <div class="card">
+    <input class="tit" id="titulo" type="text" placeholder="Título del apunte">
+    <div class="chips" id="etiquetas"></div>
+    <p class="litur" id="litur"></p>
+    <div class="herr">
+      <button onclick="fmt('bold')"><b>B</b></button>
+      <button onclick="fmt('italic')"><i>I</i></button>
+      <button onclick="fmt('underline')"><u>U</u></button>
+      <button onclick="fmt('formatBlock','&lt;h3&gt;')">H</button>
+      <button onclick="fmt('insertUnorderedList')">&bull;</button>
+      <button onclick="fmt('insertOrderedList')">1.</button>
+      <button onclick="fmt('removeFormat')">&#10005;</button>
+    </div>
+    <div id="cuerpo" contenteditable="true" data-ph="Escriba aquí…"></div>
+    <div class="bar">
+      <button class="b" onclick="guardarNota()">Guardar</button>
+      <button class="b sec" onclick="cerrarEditor()">Cancelar</button>
+      <button class="b sec" onclick="compartirNota()">Compartir</button>
+      <button class="b sec" onclick="borrarNota()">Eliminar</button>
+      <span class="est" id="estN"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+var COLORES={'Homilía':'#8B1A1A','Reunión':'#1A2D6B','Visita':'#2E7D4F','Personal':'#7A4E9B'};
+var ETIQ=['Homilía','Reunión','Visita','Personal'];
+var MESES=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+var DIAS=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+
+function leer(k){
+  try{ if(window.Android && Android.leer) return Android.leer(k)||''; }catch(e){}
+  try{ return localStorage.getItem(k)||''; }catch(e){ return ''; }
+}
+function escribir(k,v){
+  try{ if(window.Android && Android.guardar){ Android.guardar(k,v); return; } }catch(e){}
+  try{ localStorage.setItem(k,v); }catch(e){}
+}
+function compartir(txt){
+  try{ if(window.Android && Android.compartir){ Android.compartir(txt); return true; } }catch(e){}
+  try{ if(navigator.share){ navigator.share({text:txt}).catch(function(){}); return true; } }catch(e){}
+  try{ if(navigator.clipboard){ navigator.clipboard.writeText(txt); alertaSuave('Copiado. Péguelo donde quiera guardarlo.'); return true; } }catch(e){}
+  return false;
+}
+function diaLiturgico(){
+  try{ if(window.Android && Android.diaLiturgico) return Android.diaLiturgico()||''; }catch(e){}
+  try{ if(window.parent && window.parent.diaLiturgicoTexto) return window.parent.diaLiturgicoTexto()||''; }catch(e){}
+  return '';
+}
+function alertaSuave(t){ var e=document.getElementById('estN'); if(e) e.textContent=t;
+}
+function hoyISO(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function etiquetaFecha(f){
+  if(!f) return '';
+  var h=hoyISO(); if(f===h) return 'Hoy';
+  var d=new Date(f+'T12:00:00'), hd=new Date(h+'T12:00:00');
+  var dif=Math.round((d-hd)/86400000);
+  if(dif===1) return 'Mañana';
+  var txt=DIAS[d.getDay()]+' '+d.getDate()+' '+MESES[d.getMonth()];
+  return dif<0 ? (txt+' · atrasada') : txt;
+}
+function fechaCorta(iso){ if(!iso) return ''; var d=new Date(iso);
+  return d.getDate()+' '+MESES[d.getMonth()]+' '+d.getFullYear(); }
+
+/* ---------- tareas ---------- */
+var TAREAS=[];
+try{ var raw=leer('tareas'); if(raw) TAREAS=JSON.parse(raw)||[]; }catch(e){ TAREAS=[]; }
+function grabarT(){ escribir('tareas', JSON.stringify(TAREAS)); }
+(function(){ var h=hoyISO(), n=TAREAS.length;
+  TAREAS=TAREAS.filter(function(t){return !(t.ok && (t.dia||'') < h);});
+  if(TAREAS.length!==n) grabarT(); })();
+function cambioFecha(){
+  var f=document.getElementById('nuevaF'), m=document.getElementById('muestraF');
+  document.getElementById('fbtn').classList.toggle('puesta',!!f.value);
+  m.innerHTML = f.value ? ('Para el <b>'+etiquetaFecha(f.value)+'</b> <button onclick="quitarFecha()">quitar</button>') : '';
+}
+function quitarFecha(){ document.getElementById('nuevaF').value=''; cambioFecha(); }
+function alternar(i){ TAREAS[i].ok=!TAREAS[i].ok; grabarT(); pintarT(); }
+function pintarT(){
+  var ul=document.getElementById('listaT'); ul.innerHTML='';
+  var h=hoyISO();
+  var o=TAREAS.map(function(t,i){return {t:t,i:i};});
+  o.sort(function(a,b){ if(a.t.ok!==b.t.ok) return a.t.ok?1:-1;
+    var fa=a.t.dia||'9999-99-99', fb=b.t.dia||'9999-99-99'; return fa<fb?-1:fa>fb?1:0; });
+  var grupo='';
+  o.forEach(function(x){
+    var t=x.t, i=x.i, g;
+    if(t.ok) g='Cumplidas'; else if(!t.dia) g='Sin fecha';
+    else if(t.dia<h) g='Atrasadas'; else if(t.dia===h) g='Hoy'; else g='Próximas';
+    if(g!==grupo){ grupo=g; var gd=document.createElement('div'); gd.className='grupoT'; gd.textContent=g; ul.appendChild(gd); }
+    var li=document.createElement('li'); if(t.ok) li.className='hecha';
+    var chk=document.createElement('div'); chk.className='chk'; chk.textContent='✓'; chk.onclick=function(){alternar(i);};
+    var tx=document.createElement('div'); tx.className='txt';
+    tx.appendChild(document.createTextNode(t.t));
+    if(t.dia){ var f=document.createElement('small');
+      f.className='fechaT'+((!t.ok && t.dia<h)?' vencida':'');
+      f.textContent='📅 '+etiquetaFecha(t.dia); tx.appendChild(f); }
+    tx.onclick=function(){alternar(i);};
+    var x2=document.createElement('button'); x2.className='x'; x2.textContent='×';
+    x2.onclick=function(){ TAREAS.splice(i,1); grabarT(); pintarT(); };
+    li.appendChild(chk); li.appendChild(tx); li.appendChild(x2); ul.appendChild(li);
+  });
+  var hechas=TAREAS.filter(function(t){return t.ok;}).length;
+  document.getElementById('vacioT').style.display=TAREAS.length?'none':'';
+  document.getElementById('contT').textContent=TAREAS.length?(hechas+' de '+TAREAS.length+' cumplidas'):'';
+}
+function agregar(){
+  var c=document.getElementById('nuevaT'), f=document.getElementById('nuevaF');
+  var v=c.value.trim(); if(!v) return;
+  TAREAS.push({t:v,ok:false,dia:f.value||''});
+  c.value=''; f.value=''; cambioFecha(); grabarT(); pintarT();
+}
+function limpiarHechas(){ TAREAS=TAREAS.filter(function(t){return !t.ok;}); grabarT(); pintarT(); }
+document.getElementById('nuevaT').addEventListener('keydown',function(e){ if(e.key==='Enter') agregar(); });
+
+/* ---------- notas ---------- */
+var NOTAS=[];
+try{ var r2=leer('notas_v2'); if(r2) NOTAS=JSON.parse(r2)||[]; }catch(e){ NOTAS=[]; }
+function grabarN(){ escribir('notas_v2', JSON.stringify(NOTAS)); }
+(function(){
+  var viejo=leer('apuntes');
+  if(viejo && viejo.trim() && !leer('migrado_apuntes')){
+    NOTAS.push({id:Date.now(),tit:'Apunte anterior',cuerpo:viejo.replace(/\n/g,'<br>'),
+      etiq:'Personal',creada:new Date().toISOString(),litur:''});
+    escribir('migrado_apuntes','si'); grabarN();
+  }
+})();
+
+var filtro='Todas', actual=null;
+(function(){
+  var f=document.getElementById('filtros');
+  ['Todas'].concat(ETIQ).forEach(function(e){
+    var b=document.createElement('button');
+    b.className='chip'+(e==='Todas'?' on':''); b.dataset.e=e; b.textContent=e;
+    if(COLORES[e]) b.dataset.color=COLORES[e];
+    b.onclick=function(){ filtro=e;
+      Array.prototype.forEach.call(f.children,function(c){
+        var on=(c.dataset.e===e); c.classList.toggle('on',on);
+        c.style.background = on ? (c.dataset.color||'var(--suave)') : 'transparent';
+      });
+      pintarNotas(); };
+    f.appendChild(b);
+  });
+  var g=document.getElementById('etiquetas');
+  ETIQ.forEach(function(e){
+    var b=document.createElement('button');
+    b.className='chip'; b.dataset.e=e; b.textContent=e;
+    b.onclick=function(){
+      Array.prototype.forEach.call(g.children,function(c){
+        var on=(c===b); c.classList.toggle('on',on);
+        c.style.background = on ? COLORES[c.dataset.e] : 'transparent';
+      });
+    };
+    g.appendChild(b);
+  });
+})();
+
+function soloTexto(html){ var d=document.createElement('div'); d.innerHTML=html||'';
+  return (d.textContent||'').replace(/\s+/g,' ').trim(); }
+
+function pintarNotas(){
+  var q=(document.getElementById('buscar').value||'').toLowerCase();
+  var cont=document.getElementById('listaN'); cont.innerHTML='';
+  var lista=NOTAS.slice().sort(function(a,b){ return a.creada<b.creada?1:-1; })
+    .filter(function(n){ return filtro==='Todas' || n.etiq===filtro; })
+    .filter(function(n){ if(!q) return true;
+      return (n.tit||'').toLowerCase().indexOf(q)>=0 || soloTexto(n.cuerpo).toLowerCase().indexOf(q)>=0; });
+  document.getElementById('vacioN').style.display=lista.length?'none':'';
+  document.getElementById('vacioN').textContent = NOTAS.length ? 'Ningún apunte coincide con la búsqueda.' : 'Todavía no hay apuntes.';
+  document.getElementById('etiLista').textContent = 'Apuntes' + (lista.length?(' · '+lista.length):'');
+  lista.forEach(function(n){
+    var d=document.createElement('div'); d.className='nota';
+    var col=COLORES[n.etiq]||'#E4DACB';
+    var tag = n.etiq ? ('<span class="tag" style="background:'+col+'">'+n.etiq+'</span>') : '';
+    d.innerHTML='<div class="barra" style="background:'+col+'"></div><div class="cont">'+
+      '<h3></h3><p></p><div class="meta">'+tag+fechaCorta(n.creada)+(n.litur?(' · '+n.litur):'')+'</div></div>';
+    d.querySelector('h3').textContent = n.tit||'(sin título)';
+    d.querySelector('p').textContent = soloTexto(n.cuerpo).substring(0,140);
+    d.onclick=function(){ abrirEditor(n.id); };
+    cont.appendChild(d);
+  });
+}
+
+function verTab(cual){
+  var t=(cual==='tareas');
+  document.getElementById('paneTareas').style.display=t?'block':'none';
+  document.getElementById('paneNotas').style.display=t?'none':'block';
+  document.getElementById('editor').style.display='none';
+  document.getElementById('tabT').classList.toggle('on',t);
+  document.getElementById('tabN').classList.toggle('on',!t);
+  if(t) pintarT(); else pintarNotas();
+}
+
+function abrirEditor(id){
+  actual = id ? NOTAS.filter(function(n){return n.id===id;})[0] : null;
+  document.getElementById('paneNotas').style.display='none';
+  document.getElementById('paneTareas').style.display='none';
+  document.getElementById('editor').style.display='block';
+  document.getElementById('titulo').value = actual ? (actual.tit||'') : '';
+  document.getElementById('cuerpo').innerHTML = actual ? (actual.cuerpo||'') : '';
+  document.getElementById('estN').textContent='';
+  var lit = actual ? (actual.litur||'') : diaLiturgico();
+  var el=document.getElementById('litur');
+  el.textContent = lit ? ('📖 '+lit) : ''; el.dataset.v = lit;
+  var g=document.getElementById('etiquetas');
+  Array.prototype.forEach.call(g.children,function(c){
+    var on = actual ? (c.dataset.e===actual.etiq) : false;
+    c.classList.toggle('on',on);
+    c.style.background = on ? COLORES[c.dataset.e] : 'transparent';
+  });
+  window.scrollTo(0,0);
+}
+function cerrarEditor(){
+  document.getElementById('editor').style.display='none';
+  document.getElementById('paneNotas').style.display='block';
+  pintarNotas(); window.scrollTo(0,0);
+}
+function fmt(cmd,val){ document.execCommand(cmd,false,val||null); document.getElementById('cuerpo').focus(); }
+function etiqSel(){
+  var g=document.getElementById('etiquetas'), r='';
+  Array.prototype.forEach.call(g.children,function(c){ if(c.classList.contains('on')) r=c.dataset.e; });
+  return r;
+}
+function guardarNota(){
+  var tit=document.getElementById('titulo').value.trim();
+  var cuerpo=document.getElementById('cuerpo').innerHTML;
+  if(!tit && !soloTexto(cuerpo)){ document.getElementById('estN').textContent='Escriba algo primero'; return; }
+  if(!tit) tit = soloTexto(cuerpo).substring(0,40) || 'Sin título';
+  if(actual){ actual.tit=tit; actual.cuerpo=cuerpo; actual.etiq=etiqSel(); }
+  else NOTAS.push({id:Date.now(),tit:tit,cuerpo:cuerpo,etiq:etiqSel(),
+      creada:new Date().toISOString(), litur:document.getElementById('litur').dataset.v||''});
+  grabarN(); cerrarEditor();
+}
+function borrarNota(){
+  if(!actual){ cerrarEditor(); return; }
+  NOTAS=NOTAS.filter(function(n){return n.id!==actual.id;});
+  grabarN(); cerrarEditor();
+}
+function textoPlano(n){
+  var s=(n.tit||'(sin título)')+'\n';
+  s+=fechaCorta(n.creada)+(n.etiq?(' · '+n.etiq):'')+(n.litur?(' · '+n.litur):'')+'\n\n';
+  var d=document.createElement('div'); d.innerHTML=n.cuerpo||'';
+  Array.prototype.forEach.call(d.querySelectorAll('li'),function(b){ b.textContent='• '+b.textContent+'\n'; });
+  Array.prototype.forEach.call(d.querySelectorAll('br'),function(b){ b.parentNode.replaceChild(document.createTextNode('\n'),b); });
+  Array.prototype.forEach.call(d.querySelectorAll('div,p,h3'),function(b){ b.appendChild(document.createTextNode('\n')); });
+  s+=(d.textContent||'').replace(/\n{3,}/g,'\n\n').trim();
+  return s;
+}
+function compartirNota(){
+  var n = actual ? actual : {tit:document.getElementById('titulo').value.trim(),
+    cuerpo:document.getElementById('cuerpo').innerHTML, etiq:etiqSel(),
+    creada:new Date().toISOString(), litur:document.getElementById('litur').dataset.v||''};
+  if(!compartir(textoPlano(n))) document.getElementById('estN').textContent='No se pudo compartir';
+}
+function exportarTodo(){
+  if(!NOTAS.length) return;
+  var s='APUNTES — Diócesis de Socorro y San Gil\n';
+  s+='Copia generada el '+fechaCorta(new Date().toISOString())+'\n';
+  s+='========================================\n\n';
+  NOTAS.slice().sort(function(a,b){return a.creada<b.creada?1:-1;})
+    .forEach(function(n){ s+=textoPlano(n)+'\n\n----------------------------------------\n\n'; });
+  compartir(s);
+}
+
+pintarT(); pintarNotas(); cambioFecha();
+</script>
+</body></html>
